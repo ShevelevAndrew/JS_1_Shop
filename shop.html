@@ -96,7 +96,6 @@
                 }
                 this._calculateSum()
                 this._checkTotal()
-                this._totalCart()
                     // cart.items.push (Object.assign ({}, find, {quantity: 1}))
             },
             addProductCart(product) {
@@ -109,14 +108,14 @@
                     find.quantity -= 1
                 }
                 this._calculateSum()
-                this._totalCart()
+                this._checkTotal()
                 this.rander()
             },
             deleteProduct(id) {
                 this.total -= this.items[id].quantity
                 this.sum -= this.items[id].price * this.items[id].quantity
                 cart.items.splice(id, 1)
-                this._totalCart()
+                this._checkTotal()
                 this.rander()
             },
             _calculateSum() {
