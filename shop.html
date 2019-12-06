@@ -109,7 +109,6 @@
                     find.quantity -= 1
                 }
                 this._calculateSum()
-                this._checkTotal()
                 this._totalCart()
                 this.rander()
             },
@@ -133,12 +132,6 @@
                     quantityCart += cart.quantity
                 }
                 this.total = quantityCart
-            },
-            _totalCart() {
-                // let str = ''
-                // str += `Корзина - Товаров(${this.total}) Сумма(${this.sum}) `
-
-                // document.querySelector(this.container).innerHTML = str
             },
             rander() {
                 document.getElementById('content').className = 'carts'
