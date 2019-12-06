@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style/style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <div class="headerInside">
+            <div class="logo"></div>
+            <div class="companyName">Brand</div>
+            <div class="navWrap">
+                <a href="/index.html">
+                        Главная
+                    </a>
+                <a onclick="catalog.render()">
+                        Магазин
+                    </a>
+                <a onclick="cart.rander()" class="cart">
+                        Корзина
+                </a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div id="content" class="products"></div>
+    </main>
+    <footer></footer>
+    <script>
+        //ИМИТАЦИЯ РАБОТЫ БАЗЫ ДАННЫХ И СЕРВЕРА
+
+        let PRODUCTS_NAMES = ['Processor', 'Display', 'Notebook', 'Mouse', 'Keyboard']
+        let PRICES = [100, 120, 1000, 15, 18]
+        let IDS = [0, 1, 2, 3, 4]
+
+        let catalog = {
+            items: [],
+            container: '.products',
+            construct() {
+                this._init() //_ - это обозначение инкапсулированного метода
+            },
+            _init() {
+                this._handleData()
+                this.render()
+            },
+            _handleData() {
+                for (let i = 0; i < IDS.length; i++) {
+                    this.items.push(this._createNewProduct(i))
+                }
+            },
+            _createNewProduct(index) {
+                return {
+                    product_name: PRODUCTS_NAMES[index],
+                    price: PRICES[index],
+                    product_id: IDS[index]
+                }
+            },
+            render() {
+                document.getElementById('content').className = 'products'
+                let str = ''
+                this.items.forEach(item => {
+                    str += `
+                        <div class="product">
+                            <img src="https://placehold.it/300x200">
+                            <b>${item.product_name}</b>
+                            <i>${item.price}</i>
+                            <button onclick="cart.addProduct(${item.product_id})">Купить</button>
+                        </div>
+                    `
+                })
+                document.querySelector(this.container).innerHTML = str
+            }
+        }
+
+        let cart = {
+            items: [],
+            total: 0,
+            sum: 0,
+            container: '.cart',
+            addProduct(product) {
+                let id = product
+                    //нарушение инкапсуляции (Вообще так не делаем, но пока делаем)
+                let prod = catalog._createNewProduct(product)
+
+                let find = this.items.find(product => product.product_id === id)
+                if (find) {
+                    find.quantity++
+                } else {
+                    prod.quantity = 1
+                    this.items.push(prod)
+                }
+                this._calculateSum()
+                this._checkTotal()
+                this._totalCart()
+                    // cart.items.push (Object.assign ({}, find, {quantity: 1}))
+            },
+            addProductCart(product) {
+                this.addProduct(product)
+                this.rander()
+            },
+            takeProduct(id) {
+                let find = this.items.find(el => el.product_id === id)
+                if (find.quantity > 0) {
+                    find.quantity -= 1
+                }
+                this._calculateSum()
+                this._checkTotal()
+                this._totalCart()
+                this.rander()
+            },
+            deleteProduct(id) {
+                this.total -= this.items[id].quantity
+                this.sum -= this.items[id].price * this.items[id].quantity
+                cart.items.splice(id, 1)
+                this._totalCart()
+                this.rander()
+            },
+            _calculateSum() {
+                let sumCart = 0
+                for (const cart of this.items) {
+                    sumCart += cart.price * cart.quantity
+                }
+                this.sum = sumCart
+            },
+            _checkTotal() {
+                let quantityCart = 0
+                for (const cart of this.items) {
+                    quantityCart += cart.quantity
+                }
+                this.total = quantityCart
+            },
+            _totalCart() {
+                // let str = ''
+                // str += `Корзина - Товаров(${this.total}) Сумма(${this.sum}) `
+
+                // document.querySelector(this.container).innerHTML = str
+            },
+            rander() {
+                document.getElementById('content').className = 'carts'
+                let str = ''
+                this.items.forEach((item, index) => {
+                    str += `
+                        <div class="cartProduct">
+                            <img src="https://placehold.it/300x200">
+                            <b>${item.product_name}</b>
+                            <i>кол-во:${item.quantity}</i>
+                            <i>цена:${item.price}</i>
+                            <i>сумма:${item.price*item.quantity}</i>
+                            <button onclick="cart.addProductCart(${item.product_id})">+</button>
+                            <button onclick="cart.takeProduct(${item.product_id})">-</button>
+                            <button onclick="cart.deleteProduct(${index})">Удалить</button>
+                        </div>
+                    `
+                })
+                str += `
+                <div class="cartProduct">
+                    <b>Итого:</b>
+                    <i>Кол-во товаров:${this.total}</i>
+                    <i>Сумма:${this.sum}</i>
+                    <button>Оплатить</button>
+                </div>
+                `
+                document.querySelector('.carts').innerHTML = str
+            }
+        }
+        catalog.construct() //тут происходит создание объекта и вся прочая магия
+    </script>
+</body>
+
+</html>
