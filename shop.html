@@ -15,13 +15,16 @@
             <div class="logo"></div>
             <div class="companyName">Brand</div>
             <div class="navWrap">
+                <label>
+                <input type="text" placeholder="поиск товара"><button>Найти</button></label>
                 <a href="/index.html">
                         Главная
                     </a>
                 <a onclick="catalog.render()">
                         Магазин
                     </a>
-                <a onclick="cart.rander()" class="cart">
+                <!-- <a onclick="cart.rander()" class="cart"> -->
+                <a id="cartbutton" class="cart">
                         Корзина
                 </a>
             </div>
@@ -29,6 +32,28 @@
     </header>
     <main>
         <div id="content" class="products"></div>
+        <div id="buycart" class="cartbuy">
+            <!-- <div class="cart-wrapper">
+                <img src="https://placehold.it/300x200">
+                <p>Товар</p>
+                <p>2</p>
+                <p>9999.00</p>
+                <button name="delItem">x</button>
+            </div>
+            <div class="cart-wrapper">
+                <img src="https://placehold.it/300x200">
+                <p>Товар</p>
+                <p>2</p>
+                <p>9999.00</p>
+                <button name="delItem">x</button>
+            </div>
+            <div class="cart-wrapper">
+                <b>Итого:</b>
+                <i>Кол-во товаров:${this.total}</i>
+                <i>Сумма:${this.sum}</i>
+                <button class="go-cart">Перейти к оплате</button>
+            </div> -->
+        </div>
     </main>
     <footer></footer>
     <script>
@@ -69,11 +94,29 @@
                             <img src="https://placehold.it/300x200">
                             <b>${item.product_name}</b>
                             <i>${item.price}</i>
-                            <button onclick="cart.addProduct(${item.product_id})">Купить</button>
+                            <button name="buy">Купить</button>
                         </div>
                     `
                 })
                 document.querySelector(this.container).innerHTML = str
+
+                let CONTEINER = document.getElementById('content')
+                CONTEINER.addEventListener('click', this.findItem)
+
+                let cartbutton = document.getElementById('cartbutton')
+                cartbutton.addEventListener('click', cart.showCart)
+                    // document.getElementsByName('cartbutton').addEventListener('click', cart.rander)
+                console.dir(document.getElementById('cartbutton'))
+            },
+            findItem(evt) {
+                let doc = document.getElementsByName('buy')
+                let len = doc.length
+                for (i = 0; i < len; i++) {
+                    if (doc[i] == evt.target) {
+                        cart.addProduct(catalog.items[i].product_id)
+                        break
+                    }
+                }
             }
         }
 
@@ -82,6 +125,7 @@
             total: 0,
             sum: 0,
             container: '.cart',
+            visibleCart: false,
             addProduct(product) {
                 let id = product
                     //нарушение инкапсуляции (Вообще так не делаем, но пока делаем)
@@ -96,7 +140,8 @@
                 }
                 this._calculateSum()
                 this._checkTotal()
-                    // cart.items.push (Object.assign ({}, find, {quantity: 1}))
+                this.randerCart()
+                this._addListnerDeleteButton()
             },
             addProductCart(product) {
                 this.addProduct(product)
@@ -116,7 +161,7 @@
                 this.sum -= this.items[id].price * this.items[id].quantity
                 cart.items.splice(id, 1)
                 this._checkTotal()
-                this.rander()
+                this.randerCart()
             },
             _calculateSum() {
                 let sumCart = 0
@@ -145,7 +190,7 @@
                             <i>сумма:${item.price*item.quantity}</i>
                             <button onclick="cart.addProductCart(${item.product_id})">+</button>
                             <button onclick="cart.takeProduct(${item.product_id})">-</button>
-                            <button onclick="cart.deleteProduct(${index})">Удалить</button>
+                            <button onclick="cart.deleteProduct(${index}); cart.rander()">Удалить</button>
                         </div>
                     `
                 })
@@ -158,6 +203,60 @@
                 </div>
                 `
                 document.querySelector('.carts').innerHTML = str
+                    // this.visibleCart = false
+
+            },
+            showCart() {
+
+                if (!this.visibleCart) {
+                    document.getElementById('buycart').style.display = 'block'
+                } else {
+                    document.getElementById('buycart').style.display = 'none'
+                }
+                this.visibleCart = !this.visibleCart
+                cart.randerCart()
+            },
+            randerCart() {
+                let str = ''
+                this.items.forEach((item, index) => {
+                    str += `
+                            <div class="cart-wrapper">
+                            <img src="https://placehold.it/75x50">
+                            <p>${item.product_name}</p>
+                            <p>${item.quantity}</p>
+                            <p>${item.price}</p>
+                            <button name="delItem">x</button>
+                            </div>
+                    `
+                })
+                str += `
+                    <div class="cart-wrapper">
+                    <b>Итого:</b>
+                    <i>Кол-во товаров:${this.total}</i>
+                    <i>Сумма:${this.sum}</i>
+                    <button onclick="cart.rander()" class="go-cart">Перейти к оплате</button>
+                    </div>
+                </div>
+                `
+                document.querySelector('.cartbuy').innerHTML = str
+                    // document.getElementsByName('cartbutton').addEventListener('click', cart.randerCart)
+                    // console.dir(document.getElementsByName('cartbutton'))
+                    // CONTEINER.addEventListener('click', this.findItem)
+                    // 
+            },
+            _addListnerDeleteButton() {
+                let conteinerCart = document.getElementById('buycart')
+                conteinerCart.addEventListener('click', this.findItem)
+            },
+            findItem(evt) {
+                let doc = document.getElementsByName('delItem')
+                let len = doc.length
+                for (i = 0; i < len; i++) {
+                    if (doc[i] == evt.target) {
+                        cart.deleteProduct(i)
+                        break
+                    }
+                }
             }
         }
         catalog.construct() //тут происходит создание объекта и вся прочая магия

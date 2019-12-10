@@ -16,7 +16,7 @@ header {
 }
 
 .headerInside {
-  width: 1100px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -26,6 +26,7 @@ header {
   float: left;
   background: url("../image/origami-logo.svg") no-repeat;
   background-size: contain;
+  margin-left: 100px;
 }
 
 .companyName {
@@ -51,6 +52,7 @@ header {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  margin-right: 50px;
 }
 
 .navWrap a {
@@ -100,6 +102,8 @@ header {
 .product {
   border: 1px solid #aaa;
   border-radius: 8px;
+  -webkit-box-shadow: 0 0 10px rgba(100, 100, 100, 0.2);
+          box-shadow: 0 0 10px rgba(100, 100, 100, 0.2);
   padding: 30px;
   margin: 10px;
   width: 260px;
@@ -151,6 +155,7 @@ header {
   font-weight: 400;
   line-height: 1.32em;
   border: none;
+  cursor: pointer;
 }
 
 button:hover {
@@ -224,5 +229,88 @@ button:hover {
 
 .cartProduct button {
   margin-right: 10px;
+}
+
+.cartbuy {
+  border: 1px solid #000;
+  display: none;
+  background: #fff;
+  font-size: 0.8em;
+  position: absolute;
+  right: 2px;
+  top: 80px;
+  width: 500px;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.cartbuy::after {
+  content: '';
+  position: absolute;
+  right: 90px;
+  top: -20px;
+  border: 10px solid transparent;
+  border-bottom: 10px solid #555;
+}
+
+.cart-wrapper {
+  border: 1px solid #eee;
+  -webkit-box-shadow: 0 0 10px rgba(100, 100, 100, 0.1);
+          box-shadow: 0 0 10px rgba(100, 100, 100, 0.1);
+  border-radius: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.cart-wrapper img {
+  width: 75px;
+  height: 50px;
+  border-radius: 2px;
+  padding-right: 5px;
+}
+
+.cartbuy p:nth-child(2) {
+  width: 200px;
+}
+
+.cartbuy p:nth-child(3) {
+  width: 70px;
+  text-align: center;
+}
+
+.cartbuy p:nth-child(4) {
+  width: 100px;
+  text-align: center;
+}
+
+.cartbuy button {
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.cart-wrapper b, i {
+  margin: 5px;
+}
+
+.cartbuy .go-cart {
+  border-radius: 5px;
+  height: 25px;
+  margin: 15px;
 }
 /*# sourceMappingURL=style.css.map */
