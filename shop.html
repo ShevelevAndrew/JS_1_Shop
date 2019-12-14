@@ -16,23 +16,22 @@
             <div class="companyName">Brand</div>
             <div class="navWrap">
                 <label>
-                <input type="text" placeholder="поиск товара"><button>Найти</button></label>
-                <a href="/index.html">
+                <input id="findText" type="text" placeholder="поиск товара"><button id="findbnt">Найти</button></label>
+                <button id="home" class="navButton">
                         Главная
-                    </a>
-                <a onclick="catalog.render()">
+                    </button>
+                <button id="shop" class="navButton">
                         Магазин
-                    </a>
-                <!-- <a onclick="cart.rander()" class="cart"> -->
-                <a id="cartbutton" class="cart">
+                </button>
+                <button id="cartbutton" class="navButton">
                         Корзина
-                </a>
+                </button>
             </div>
         </div>
     </header>
     <main>
         <div id="content" class="products"></div>
-        <div id="buycart" class="cartbuy">
+        <div id="buycart" class="cartbuy" style="display: none;">
             <!-- <div class="cart-wrapper">
                 <img src="https://placehold.it/300x200">
                 <p>Товар</p>
@@ -66,10 +65,13 @@
         let catalog = {
             items: [],
             container: '.products',
+            shop: null,
             construct() {
                 this._init() //_ - это обозначение инкапсулированного метода
             },
             _init() {
+                shop = document.getElementById('shop')
+                shop.addEventListener('click', catalog.render)
                 this._handleData()
                 this.render()
             },
@@ -88,7 +90,7 @@
             render() {
                 document.getElementById('content').className = 'products'
                 let str = ''
-                this.items.forEach(item => {
+                catalog.items.forEach(item => {
                     str += `
                         <div class="product">
                             <img src="https://placehold.it/300x200">
@@ -98,7 +100,7 @@
                         </div>
                     `
                 })
-                document.querySelector(this.container).innerHTML = str
+                document.querySelector(catalog.container).innerHTML = str
 
                 let CONTEINER = document.getElementById('content')
                 CONTEINER.addEventListener('click', this.findItem)
@@ -125,7 +127,6 @@
             total: 0,
             sum: 0,
             container: '.cart',
-            visibleCart: false,
             addProduct(product) {
                 let id = product
                     //нарушение инкапсуляции (Вообще так не делаем, но пока делаем)
@@ -207,13 +208,9 @@
 
             },
             showCart() {
-
-                if (!this.visibleCart) {
-                    document.getElementById('buycart').style.display = 'block'
-                } else {
+                document.getElementById('buycart').style.display == 'none' ?
+                    document.getElementById('buycart').style.display = 'block' :
                     document.getElementById('buycart').style.display = 'none'
-                }
-                this.visibleCart = !this.visibleCart
                 cart.randerCart()
             },
             randerCart() {
@@ -234,7 +231,7 @@
                     <b>Итого:</b>
                     <i>Кол-во товаров:${this.total}</i>
                     <i>Сумма:${this.sum}</i>
-                    <button onclick="cart.rander()" class="go-cart">Перейти к оплате</button>
+                    <button onclick="cart.rander(); cart.showCart() " class="go-cart">Перейти к оплате</button>
                     </div>
                 </div>
                 `

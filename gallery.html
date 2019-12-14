@@ -5,21 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style/gallery.css">
     <title>Document</title>
 </head>
 
 <body>
     <div class="wrapper">
         <div id="GALLERY">
-            <div class="gallery-wraper">
-                <button class="gallery-btn" name="btn"><</button>
+            <div>
                 <img id="MAIN-PIC" width="400" height="300">
-                <button class="gallery-btn" name="btn">></button>
             </div>
         </div>
 
         <div id="roulette">
+        </div>
+        <div id="control">
+            <button name="control" data-step="-1"><<<</button>
+            <button name="control" data-step="1">>>></button>
         </div>
     </div>
 
@@ -31,73 +32,69 @@
             'https://files.sandberg.it/products/images/lg/640-05_lg.jpg',
             'https://images-na.ssl-images-amazon.com/images/I/81PLqxtrJ3L._SX466_.jpg'
         ]
+        let gallery = {
+            items: [],
+            MAIN_PIC: null,
+            ROUL: null,
+            CONTR: null,
+            constuct() {
+                this._init()
+                this._addItem()
+            },
+            _init() {
+                MAIN_PIC = document.getElementById('MAIN-PIC')
+                ROUL = document.getElementById('roulette')
+                CONTR = document.getElementById('control')
+                ROUL.addEventListener('click', this._changeMain)
+                CONTR.addEventListener('click', this._changeRol)
+            },
+            _addItem() {
+                IMGS.forEach(value => {
+                    this.items.push(value)
 
-        let MAIN_PIC = document.getElementById('MAIN-PIC')
-        let ROUL = document.getElementById('roulette')
-        let BTN_MAIN_PIC = document.getElementById('GALLERY')
-        let nowFoto = 0
-        window.onload = function() {
-            MAIN_PIC.src = IMGS[nowFoto]
-
-            IMGS.forEach(el => {
-                ROUL.insertAdjacentHTML('beforeend', createItem(el).render())
-            })
-        }
-
-        function createItem(item) {
-            return {
-                width: 150,
-                height: 100,
-                render: function() {
-                    return `
+                })
+                window.onload = function() {
+                    this.MAIN_PIC.src = gallery.items[0]
+                    IMGS.forEach(el => {
+                        ROUL.insertAdjacentHTML('beforeend', gallery._createItem(el).render())
+                    })
+                }
+            },
+            _createItem(item) {
+                return {
+                    width: 150,
+                    height: 100,
+                    render: function() {
+                        return `
                         <img 
-                        class="roulette-img"
-                        name="img"
                         src="${item}" 
                         width="${this.width}" 
                         height="${this.height}">
                     `
-                }
-            }
-        }
-
-        ROUL.addEventListener('click', changeMain)
-
-        function changeMain(evt) {
-            let doc = document.getElementsByName('img')
-            let len = doc.length
-            for (i = 0; i < len; i++) {
-                if (doc[i] == evt.target) {
-                    MAIN_PIC.src = IMGS[i]
-                    nowFoto = i
-                }
-            }
-            // if (evt.target.tagName === 'IMG') {
-            //     MAIN_PIC.src = evt.target.src
-            // }
-            // console.dir (event.target)
-            //MAIN_PIC.src = source
-        }
-
-        BTN_MAIN_PIC.addEventListener('click', findItem)
-
-        function findItem(evt) {
-            let doc = document.getElementsByName('btn')
-            let len = doc.length
-            for (i = 0; i < len; i++) {
-                if (doc[i] == evt.target) {
-                    if (i == 0 && nowFoto > 0) {
-                        nowFoto -= 1
-                        MAIN_PIC.src = IMGS[nowFoto]
                     }
-                    if (i == 1 && nowFoto < IMGS.length - 1) {
-                        nowFoto += 1
-                        MAIN_PIC.src = IMGS[nowFoto]
-                    }
-                    break
+                }
+            },
+            _changeMain(evt) {
+                if (evt.target.tagName === 'IMG') {
+                    MAIN_PIC.src = evt.target.src
+                }
+            },
+            _changeRol(evt) {
+                let e = evt.target
+
+                if (e.name === 'control') {
+                    let step = +e.dataset.step
+                    let actual = IMGS.indexOf(MAIN_PIC.src)
+
+                    if ((actual === IMGS.length - 1) && (step === 1)) actual = -1
+                    if ((actual === 0) && (step === -1)) actual = IMGS.length
+
+                    MAIN_PIC.src = IMGS[actual + step]
                 }
             }
         }
+
+        gallery.constuct()
     </script>
 </body>
 
